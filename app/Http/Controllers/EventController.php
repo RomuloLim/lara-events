@@ -11,7 +11,8 @@ class EventController extends Controller
     public function index(){
         $events = Event::get();
         $atualDate = new DateTime(date("m.d.y"));
-        return view('admin.index', compact('events','atualDate'));
+        $counter = 0;
+        return view('admin.index', compact('events','atualDate', 'counter'));
     }
 
     public function store(StoreUpdateEvent $request){
@@ -27,5 +28,13 @@ class EventController extends Controller
         $event->delete();
 
         return redirect()->route('events.index')->with('message', 'Evento deletado com sucesso!');
+    }
+
+    public function edit($id){
+        if (!$event = Event::find($id)){
+            return redirect()->route('events.index')->with('error', 'Não exite um evento com o id especificado');
+        }
+
+        return view('admin.edit', compact('event'));
     }
 }
